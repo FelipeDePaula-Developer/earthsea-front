@@ -30,6 +30,7 @@ export default function CodeGeneratorLayout() {
         try {
             const response = await fetch("http://localhost:8080/generate", {
                 method: "POST",
+                credentials: "include",  // Inclui cookies e headers necessários
                 headers: {
                     "Content-Type": "application/json",
                 },
