@@ -28,15 +28,15 @@ export default function CodeGeneratorLayout() {
         setLoading(true) // Ativar estado de carregamento
 
         try {
-            const response = await fetch("http://localhost:8080/generate", {
+            const response = await fetch("http://localhost:8080/chat/generate/gemini", {
                 method: "POST",
                 credentials: "include",  // Inclui cookies e headers necessários
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ prompt }), // Enviando o prompt ao backend
+                body: JSON.stringify({"question":prompt}), // Enviando o prompt ao backend
             })
-
+            console.log(response)
             if (!response.ok) {
                 throw new Error("Erro ao gerar código")
             }
