@@ -1,8 +1,22 @@
-// app/page.tsx
-'use client'; // Adicione isso se a página usar hooks ou interatividade
+"use client"
 
-import CodeGeneratorLayout from '../components/code-generator-layout';
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import CodeGeneratorLayout from "@/components/code-generator-layout"
 
 export default function Home() {
-  return <CodeGeneratorLayout />;
+  const router = useRouter()
+
+  // This is a simple authentication check
+  // In a real application, you would check for a valid session/token
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated")
+
+    if (!isAuthenticated) {
+      router.push("/login")
+    }
+  }, [router])
+
+  return <CodeGeneratorLayout />
 }
+

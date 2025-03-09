@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Settings, User, Code, Eye, Copy, Sun, Moon, Smartphone, Tablet, Monitor } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Settings, User, Code, Eye, Copy, Sun, Moon, Smartphone, Tablet, Monitor, LogOut } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,8 +18,16 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function CodeGeneratorLayout() {
+    const router = useRouter()
     const [isDarkMode, setIsDarkMode] = React.useState(false)
     const [previewDevice, setPreviewDevice] = React.useState("desktop")
+
+    const handleLogout = () => {
+        // In a real application, you would clear the session/token
+        localStorage.removeItem("isAuthenticated")
+        router.push("/login")
+      }
+
     const [prompt, setPrompt] = React.useState("") // Estado para armazenar o prompt digitado
     const [generatedCode, setGeneratedCode] = React.useState("// O código gerado aparecerá aqui...") // Estado para armazenar o código gerado
     const [loading, setLoading] = React.useState(false) // Estado para indicar carregamento
@@ -42,7 +51,7 @@ export default function CodeGeneratorLayout() {
             }
 
             const data = await response.json()
-            setGeneratedCode(data.code) // Atualiza o estado com o código gerado
+            setGeneratedCode(data.response) // Atualiza o estado com o código gerado
         } catch (error) {
             console.error("Erro:", error)
             setGeneratedCode("// Erro ao gerar código.")
@@ -68,6 +77,10 @@ export default function CodeGeneratorLayout() {
                                 <Settings className="mr-2 h-4 w-4" />
                                 Settings
                             </Button>
+                            <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
+                                <LogOut className="mr-2 h-4 w-4" />
+                                Logout
+                            </Button>
                         </nav>
                     </SidebarContent>
                     <SidebarFooter>
@@ -81,8 +94,9 @@ export default function CodeGeneratorLayout() {
                     <header className="flex h-14 items-center border-b px-4 lg:h-[60px]">
                         <SidebarTrigger className="lg:hidden" />
                         <div className="ml-auto flex items-center space-x-4">
-                            <Button variant="outline" size="sm">
-                                Sign in
+                            <Button variant="ghost" size="sm" onClick={handleLogout}>
+                                <LogOut className="h-4 w-4 mr-2" />
+                                Logout
                             </Button>
                         </div>
                     </header>
