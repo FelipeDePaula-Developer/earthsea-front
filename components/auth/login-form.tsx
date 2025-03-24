@@ -4,7 +4,6 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,18 +11,53 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export function LoginForm() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [showPassword, setShowPassword] = React.useState<boolean>(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [error, setError] = React.useState("")
+  const formRef = React.useRef<HTMLFormElement>(null)
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
+    setError("")
 
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false)
+    const formData = new FormData(event.currentTarget)
+    const login = formData.get("login") as string
+    const password = formData.get("password") as string
+
+    try {
+      const response = await fetch("http://localhost:8080/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ login, password }),
+        credentials: "include",
+      }).then(function(response) {
+        return response.json()
+      })
+      
+      if (response.status == "UNAUTHORIZED") {
+        // Usar a mensagem de erro da API se disponível, caso contrário usar uma mensagem padrão
+        throw new Error("Invalid credentials")
+      }
+
+      // Apenas redirecionar se o login for bem-sucedido
       router.push("/")
-    }, 1000)
+    } catch (error: unknown) {
+      console.error("Login error:", error)
+
+      if (error instanceof Error) {
+        setError(error.message)
+      } else {
+        setError("An unknown error occurred")
+      }
+
+      // Garantir que o formulário não seja resubmetido
+      if (formRef.current) {
+        formRef.current.reset()
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -32,20 +66,27 @@ export function LoginForm() {
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>Enter your credentials to access your account</CardDescription>
       </CardHeader>
-      <form onSubmit={onSubmit}>
+      <form ref={formRef} onSubmit={onSubmit}>
         <CardContent className="space-y-4">
+          {error && (
+            <div className="rounded-md bg-red-50 p-3">
+              <p className="text-sm text-red-500">{error}</p>
+            </div>
+          )}
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" placeholder="Enter your username" required />
+            <Label htmlFor="login">Username</Label>
+            <Input id="login" name="login" placeholder="Enter your username" required autoComplete="username" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 required
+                autoComplete="current-password"
               />
               <Button
                 type="button"

@@ -1,29 +1,46 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+// import {useRouter} from "next/navigation"
 import Link from "next/link"
-import { Eye, EyeOff } from "lucide-react"
+import {Eye, EyeOff} from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 
 export function RegisterForm() {
-  const router = useRouter()
+  // const router = useRouter()
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  // const [loading, setLoading] = React.useState(false) // Estado para indicar carregamento
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
+    // try {
+    //   const response = await fetch("http://localhost:8080/cad/user/", {
+    //     method: "POST",
+    //     credentials: "include",  // Inclui cookies e headers necessários
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({"question": prompt}), // Enviando o prompt ao backend
+    //   })
+    //   console.log(response)
+    //   if (!response.ok) {
+    //     throw new Error("Erro ao gerar código")
+    //   }
 
-    // Simulate registration process
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/login")
-    }, 1000)
+    //   const data = await response.json()
+    //   setGeneratedCode(data.response) // Atualiza o estado com o código gerado
+    // } catch (error) {
+    //   console.error("Erro:", error)
+    //   setGeneratedCode("// Erro ao gerar código.")
+    // } finally {
+    //   setLoading(false) // Finaliza carregamento
+    // }
   }
 
   return (
@@ -36,16 +53,16 @@ export function RegisterForm() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" required />
+            <Input id="email" type="email" placeholder="Enter your email" required/>
           </div>
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
-            <Input id="username" placeholder="Choose a username" required />
+            <Input id="username" placeholder="Choose a username" required/>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
-              <Input id="password" type={showPassword ? "text" : "password"} placeholder="Create a password" required />
+              <Input id="password" type={showPassword ? "text" : "password"} placeholder="Create a password" required/>
               <Button
                 type="button"
                 variant="ghost"
@@ -53,7 +70,7 @@ export function RegisterForm() {
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
                 <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
               </Button>
             </div>
