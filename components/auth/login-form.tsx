@@ -26,7 +26,7 @@ export function LoginForm() {
     const password = formData.get("password") as string
 
     try {
-      const response = await fetch("http://localhost:8080/user/login", {
+      const response = await fetch("http://localhost:8080/user/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login, password }),
@@ -34,13 +34,11 @@ export function LoginForm() {
       }).then(function(response) {
         return response.json()
       })
-      
+
       if (response.status == "UNAUTHORIZED") {
-        // Usar a mensagem de erro da API se disponível, caso contrário usar uma mensagem padrão
-        throw new Error("Invalid credentials")
+        throw new Error(response.messages[0])
       }
 
-      // Apenas redirecionar se o login for bem-sucedido
       router.push("/")
     } catch (error: unknown) {
       console.error("Login error:", error)
@@ -51,7 +49,6 @@ export function LoginForm() {
         setError("An unknown error occurred")
       }
 
-      // Garantir que o formulário não seja resubmetido
       if (formRef.current) {
         formRef.current.reset()
       }
