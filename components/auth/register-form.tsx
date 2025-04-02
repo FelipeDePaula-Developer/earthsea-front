@@ -44,13 +44,14 @@ export function RegisterForm() {
 
       if (response.status === "BAD_REQUEST") {
         const fieldErrors = response.messages || []
+        console.log(fieldErrors)
         const newErrors: { [key: string]: string } = {}
 
         fieldErrors.forEach((error: { field: string | number; message: string }) => {
           if (formRef.current) {
             const input = formRef.current.querySelector(`[name="${error.field}"]`) as HTMLInputElement
             if (input) {
-              newErrors[error.field as string] = error.message  // Certifique-se de que o campo de erro corresponde corretamente
+              newErrors[error.field as string] = error.message
             }
           }
         })
@@ -60,10 +61,10 @@ export function RegisterForm() {
         throw new Error("Validation errors occurred")
       }
 
-      router.push("fieldErrors/login")
+      router.push("/login")
     } catch (error: unknown) {
       console.error("Registration error:", error)
-      setError(error instanceof Error ? { general: error.message } : { general: "An unknown error occurred" })
+      // setError(error instanceof Error ? { general: error.message } : { general: "An unknown error occurred" })
 
       if (formRef.current) {
         formRef.current.reset()
